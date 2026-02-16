@@ -22,9 +22,42 @@ This project compares immune repertoire analysis tools by validating results aga
 
 
 ### 3. Re‑Analysis with Alternative Tools
+
 Using the same input data (raw reads or BAM files), we ran:
 - **TRUST4**: to reconstruct BCR clonotypes independently
 - **MiXCR** (custom run): to compare against the standard pipeline’s output
+
+  mixcr analyze exome-seq -f --species hs -t 10 $R1 $R2 \
+    "${work_dir}/${mixcr_res_dir}/${SAMPLE}/${SAMPLE}" > "${work_dir}/${mixcr_res_dir}/${SAMPLE}/${SAMPLE}.log" 2>&1
+  BAM File Preparation
+To focus the analysis on immunoglobulin (Ig) gene regions, we performed targeted extraction using GENCODE annotations:
+
+Region selection:
+
+Extracted genomic intervals corresponding to immunoglobulin genes (e.g., IGH, IGK, IGL) from the GENCODE annotation file (v43, GRCh38).
+
+Generated a BED file listing coordinates of all Ig‑related exons and introns.
+
+Targeted BAM subsetting:
+
+Used samtools view to filter the original BAM files, retaining only reads mapped to Ig regions:
+
+bash
+samtools view -b -L ig_regions.bed input.bam -o ig_subset.bam
+Indexed the subsetted BAM:
+
+bash
+samtools index ig_subset.bam
+FASTQ conversion:
+
+Converted the filtered BAM file to FASTQ format using Picard’s SamToFastq tool (v2.27.4):
+
+bash
+java -jar picard.jar SamToFastq \
+  I=ig_subset.bam \
+  O=output_R1.fastq \
+  O2=output_R2.fastq
+This produced paired‑end FASTQ files (output_R1.fastq, output_R2.fastq) for downstream analysis.
 
 
 ### 4. Comparison & Validation
