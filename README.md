@@ -23,41 +23,57 @@ This project compares immune repertoire analysis tools by validating results aga
 
 ### 3. Re‑Analysis with Alternative Tools
 
-Using the same input data (raw reads or BAM files), we ran:
+Using the same input data (BAM files), we ran:
 - **TRUST4**: to reconstruct BCR clonotypes independently
 - **MiXCR** (custom run): to compare against the standard pipeline’s output
 
-  mixcr analyze exome-seq -f --species hs -t 10 $R1 $R2 \
-    "${work_dir}/${mixcr_res_dir}/${SAMPLE}/${SAMPLE}" > "${work_dir}/${mixcr_res_dir}/${SAMPLE}/${SAMPLE}.log" 2>&1
-  BAM File Preparation
-To focus the analysis on immunoglobulin (Ig) gene regions, we performed targeted extraction using GENCODE annotations:
+
+#### BAM File Preparation for TRUST4 and MiXCR
+
+To focus the analysis on immunoglobulin gene regions, we performed targeted extraction using GENCODE annotations:
 
 Region selection:
-
-Extracted genomic intervals corresponding to immunoglobulin genes (e.g., IGH, IGK, IGL) from the GENCODE annotation file (v43, GRCh38).
-
-Generated a BED file listing coordinates of all Ig‑related exons and introns.
+- Extracted genomic intervals corresponding to immunoglobulin genes (e.g., IGH, IGK, IGL) from the GENCODE annotation file (v43, GRCh38).
+- Generated a BED file listing coordinates of all Ig‑related exons and introns.
 
 Targeted BAM subsetting:
+- Used samtools view to filter the original BAM files, retaining only reads mapped to Ig regions:
+<pre>
+samtools view -b -L ig_regions.bed input.bam --write-index -o ig_subset.bam
+</pre>
 
-Used samtools view to filter the original BAM files, retaining only reads mapped to Ig regions:
-
-bash
-samtools view -b -L ig_regions.bed input.bam -o ig_subset.bam
-Indexed the subsetted BAM:
-
-bash
-samtools index ig_subset.bam
 FASTQ conversion:
 
 Converted the filtered BAM file to FASTQ format using Picard’s SamToFastq tool (v2.27.4):
 
-bash
-java -jar picard.jar SamToFastq \
-  I=ig_subset.bam \
-  O=output_R1.fastq \
-  O2=output_R2.fastq
-This produced paired‑end FASTQ files (output_R1.fastq, output_R2.fastq) for downstream analysis.
+<pre>
+java -jar picard.jar SamToFastq -I input.bam -F input_R1.fastq.gz -F2 input_R2.fastq.gz --VALIDATION_STRINGENCY SILENT
+</pre>
+
+#### MiXCR run
+
+We used the standard  command in exome-seq mode
+
+<pre>
+mixcr analyze exome-seq -f --species hs -t 10 input_R1.fastq.gz input_R2.fastq.gz dir/sample_name
+</pre>
+
+#### TRUST4 run
+
+We ran in two modes: with BAM file and FASTQ files
+
+<pre>
+./run-trust4 -f hg38_bcrtcr.fa --ref human_IMGT+C.fa -1 example/example_1.fq -2 example/example_2.fq -o TRUST_example
+</pre>
+
+<pre>
+./run-trust4 -b example/example.bam -f hg38_bcrtcr.fa --ref human_IMGT+C.fa
+</pre>
+
+where hg38_bcrtcr.fa is created using the command (or you can use given by TRUST4)
+perl BuildDatabaseFa.pl reference.fa annotation.gtf bcr_tcr_gene_name.txt > bcrtcr.fa
+bcr_tcr_gene_name.txt - file with genes list (you can use given by TRUST4)
+annotation.gtf - file with annotation in gtf format
 
 
 ### 4. Comparison & Validation
