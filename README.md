@@ -51,7 +51,7 @@ Results include:
 
 
 ### Results
-<img width="6400" height="8000" alt="heatmap_v2" src="https://github.com/user-attachments/assets/a3ec288b-00d3-4556-a30d-3f5590905823" />
+<img width="4000" height="6000" alt="heatmap_v2" src="https://github.com/user-attachments/assets/a3ec288b-00d3-4556-a30d-3f5590905823" />
 
 Precision, %
 Precision_BCR                    62.5
