@@ -77,14 +77,10 @@ def create_stat_table(samples_list, samples_clones, cov_file, outfile):
     with open(samples_list, "r") as f1:
         reader = f1.read()
 
-    #samples = reader.strip().split("\n")
+    samples = reader.strip().split("\n")
 
-    #res_df = pd.DataFrame(columns=['sample', 'BCR_mixcr', 'TCR_mixcr', 'BCR_igv', 'TCR_igv', 'TRUST4_BAM', 'TRUST4_FASTQ', 'MiXCR', 'Precision_BCR', 'Precision_TCR', 'Precision_TRUST4_BAM', 'Precision_TRUST4_FASTQ', 'Precision_MiXCR', 'Median Coverage'])
-    res_df = pd.DataFrame(columns=['sample', 'BCR_mixcr', 'TCR_mixcr', 'BCR_igv', 'TCR_igv', 'TRUST4_BAM', 'TRUST4_FASTQ', 'MiXCR', 'Precision_BCR', 'Precision_TCR', 'Precision_TRUST4_BAM', 'Precision_TRUST4_FASTQ', 'Precision_MiXCR'])
-    #for sample in samples:
-    for i in range(29):
-        sample = "sample" + str(i+1)
-        print(sample)
+    res_df = pd.DataFrame(columns=['sample', 'BCR_mixcr', 'TCR_mixcr', 'BCR_igv', 'TCR_igv', 'TRUST4_BAM', 'TRUST4_FASTQ', 'MiXCR', 'Precision_BCR', 'Precision_TCR', 'Precision_TRUST4_BAM', 'Precision_TRUST4_FASTQ', 'Precision_MiXCR', 'Median Coverage'])
+    for sample in samples:
         try:
             tr,br,plus_tr,plus_br,plus_trust_bam,plus_trust_fastq,plus_mixcr = parse_sample(samples_clones, sample)
         except Exception as e:
@@ -149,20 +145,10 @@ def scatter_plot(infile, outfile):
     plt.savefig(outfile, dpi=800)
 
 
-def change_sheet_names(xlsx_path):
-    wb = load_workbook(filename=xlsx_path)
-    for i in range(len(wb.sheetnames)):
-        worksheet = wb.worksheets[i]
-        new_title = "sample" + str(i+1)
-        worksheet.title = new_title
-    wb.save(xlsx_path)
-
-change_sheet_names("samples_clones_no_samples_ids.xlsx")
-
 # run
-create_stat_table("/data1/projects/VDJ_recombination/mixcr_genome_steps/mixcr_pipeline_results/samples_file_btk.txt", "samples_clones_no_samples_ids.xlsx", "/data1/projects/VDJ_recombination/ruslan/samples_coverage.csv", "mixcr_igv_statistics_v2.csv")
+create_stat_table("samples_names.txt", "samples_clones.xlsx", "samples_coverage.csv", "mixcr_igv_statistics.csv")
 
 # plot
-create_heatmap("mixcr_igv_statistics_v2.csv", "heatmap_v2.png")
+create_heatmap("mixcr_igv_statistics.csv", "heatmap.png")
 
-#scatter_plot("mixcr_igv_statistics.csv", "scatterplot.png")
+scatter_plot("mixcr_igv_statistics.csv", "scatterplot.png")
