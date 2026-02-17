@@ -100,7 +100,9 @@ Results include:
 
 
 ### Results
-<img width="6400" height="8000" alt="heatmap_v2" src="https://github.com/user-attachments/assets/f32c7fdf-c997-462b-b5af-6ee4fdfd19c5" />
+<a href="images/heatmap.png" target="_blank">
+  <img src="images/heatmap.png" alt="heatmap.png">
+</a>
 
 
 Precision, %
@@ -111,4 +113,6 @@ Precision_TRUST4_FASTQ           32.1
 Precision_MiXCR                  55.0
 
 Зависимость от покрытия
-<img width="6400" height="4800" alt="scatterplot" src="https://github.com/user-attachments/assets/86f1bd7a-49a4-4e82-b4e0-8d41733e6cfc" />
+<a href="images/scatterplot.png" target="_blank">
+  <img src="images/scatterplot.png" alt="scatterplot.png">
+</a>
