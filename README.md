@@ -137,5 +137,5 @@ We also assessed the dependence of precision on sample coverage
 ### Scripts
 Script path | Description
 --- | ---
-main.sh | Runnig the programs MiXCR and TRUST4 for samples and adding found clones to the xlsx file
+[main.sh](main.sh) | Runnig the programs MiXCR and TRUST4 for samples and adding found clones to the xlsx file
 [stat_table_plot.py](stat_table_plot.py) | Creates table with precision from [results/samples_clones.xlsx](results/samples_clones.xlsx), files with samples ids and samples coverage are required and creates heatmap and scatter plot
