@@ -22,6 +22,7 @@ This project compares immune repertoire analysis tools by validating results aga
 Using the same input data (BAM files), we ran to compare against the standard pipeline’s output:
 - **TRUST4**
 - **MiXCR** (custom run)
+- **Vidjil**
 
 
 #### BAM File Preparation for TRUST4 and MiXCR
@@ -76,11 +77,30 @@ perl BuildDatabaseFa.pl reference.fa annotation.gtf bcr_tcr_gene_name.txt > hg38
 - bcr_tcr_gene_name.txt - file with genes list (a file from TRUST4 was used)
 - annotation.gtf - GENCODE annotation file (v43, GRCh38) in gtf format
 
+Then we selected only funcitonal clonotypes with the command:
+<pre>
+cat "${sample}_cdr3.out" | awk '$NF == 1' > "${sample}_productive_cdr3.out"
+perl trust-simplerep.pl "${sample}_productive_cdr3.out" > "${sample}_report_clean.tsv"
+</pre>
+
+#### Vidjil run
+
+To run vidjil-algo we first combined reads in one file with the command:
+
+<pre>
+seqtk mergepe $R1 $R2 | pigz -c -p 8 > $merged_reads
+</pre>
+
+Then we ran vidjil-algo with the command:
+
+<pre>
+vidjil-algo -g germline/homo-sapiens.g -o vidjil_res $merged_reads
+</pre>
 
 ### 4. Comparison & Validation
 We then:
 - Cross‑referenced *major clones* from the standard MiXCR with **IGV visualizations**
-- Compared clonotypes from **TRUST4** and **custom MiXCR** with the original *major clones* from the standard MiXCR
+- Compared clonotypes from **TRUST4**, **Vidjil** and **custom MiXCR** with the original *major clones* from the standard MiXCR
 
 ### 5. Results
 
@@ -89,6 +109,7 @@ The comparison information is provided in the table [results/samples_clones.xlsx
 The precision score is shown in the table [results/mixcr_igv_trust4_statistics.csv](results/mixcr_igv_trust4_statistics.csv)
 
 The figure below shows the precision of the predicted major clonotypes using the standard MiXCR pipeline relative to those found in IGV, as well as the precision of the detected clonotypes using the TRUST4  running in two modes (with a bam file and with fastq files) and custom MiXCR command relative the predicted major clonotypes from the standard MiXCR pipeline.
+
 <a href="images/heatmap.png" target="_blank">
   <img width="500" height="800" src="images/heatmap.png" alt="heatmap.png">
 </a>
@@ -98,9 +119,18 @@ Comparison groups | Precision, %
 --- | ---
 Precision BCR genes from the standard MiXCR pipeline relative to those found in IGV | 62.5
 Precision TCR genes from the standard MiXCR pipeline relative to those found in IGV | 83.1
-Precision TRUST4 clonotypes in BAM mode relative the predicted major clonotypes from the standard MiXCR pipeline | 32.1
-Precision TRUST4 clonotypes in FASTQ mode relative the predicted major clonotypes from the standard MiXCR pipeline | 32.1
-Precision MiXCR clonotypes from the custom running relative the predicted major clonotypes from the standard MiXCR pipeline | 55.0
+
+**Metrics Comparison Across Tools (relative proven in IGV clonotypes from the standard MiXCR pipeline)**
+
+*The term Conjunction denotes the logical conjunction (AND operation) of the results from three underlying methods. The term Disjunction - the logical disjunction*
+
+| metric , %  | Accuracy | F1   | Precision | Recall | Specificity |
+|-------------|----------|------|-----------|--------|-------------|
+| Conjunction | 41.38    | 29.01 | 48.85     | 23.74  | 56.03       |
+| Disjunction | 73.10    | 79.37 | 87.87     | 80.06  | 37.07       |
+| MiXCR       | 60.69    | 66.61 | 83.62     | 62.76  | 37.07       |
+| TRUST4_BAM  | 51.03    | 45.68 | 66.09     | 38.45  | 51.44       |
+| Vidjil      | 61.38    | 59.72 | 80.46     | 52.41  | 52.01       |
 
 We also assessed the dependence of precision on sample coverage
 
@@ -117,15 +147,19 @@ We also assessed the dependence of precision on sample coverage
 2. **MiXCR Performance**  
    - No significant difference observed between BCR and TCR detection using the standard MiXCR pipeline.  
 
-3. **TRUST4 vs. MiXCR**  
-   - TRUST4 showed lower accuracy compared to the standard MiXCR pipeline.  
-   - A custom MiXCR run outperformed TRUST4.  
+3. **Tools comparison**
+   - Disjunction leads with the highest F1‑score (79.37 %), showing the best balance of precision and recall.
+   - The highest precision is achieved by MiXCR (83.62 %). This tools produce fewer false positives, which is critical in tasks where the cost of an error is high.
+   - TRUST4 is the least effective
+     - F1‑score: 45.68 % (lowest)
+     - Recall: 38.45 % (low)
+     - Accuracy: 51.03 % (below average)
 
-4. **TRUST4 Modes Comparison**  
+5. **TRUST4 Modes Comparison**  
    - BAM and FASTQ modes produced nearly identical results.  
    - BAM mode ran **twice as fast** as FASTQ mode.
   
-5. **Coverage vs. Precision Trend**  
+6. **Coverage vs. Precision Trend**  
    - There is a clear tendency: **higher coverage correlates with improved precision in clonotype detection**.  
   
 ### Summary
