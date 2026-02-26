@@ -111,7 +111,7 @@ The precision score is shown in the table [results/mixcr_igv_trust4_statistics.c
 The figure below shows the precision of the predicted major clonotypes using the standard MiXCR pipeline relative to those found in IGV, as well as the precision of the detected clonotypes using the TRUST4  running in two modes (with a bam file and with fastq files) and custom MiXCR command relative the predicted major clonotypes from the standard MiXCR pipeline.
 
 <a href="images/heatmap.png" target="_blank">
-  <img width="500" height="800" src="images/heatmap.png" alt="heatmap.png">
+  <img width="1500" height="2100" src="images/heatmap.png" alt="heatmap.png">
 </a>
 
 **Overall precision assessment**
@@ -135,7 +135,7 @@ Precision TCR genes from the standard MiXCR pipeline relative to those found in 
 We also assessed the dependence of precision on sample coverage
 
 <a href="images/scatterplot.png" target="_blank">
-  <img width="600" height="900" src="images/scatterplot.png" alt="scatterplot.png">
+  <img width="1000" height="1500" src="images/scatterplot.png" alt="scatterplot.png">
 </a>
 
 
