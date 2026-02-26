@@ -106,7 +106,7 @@ We then:
 
 The comparison information is provided in the table [results/samples_clones.xlsx](results/samples_clones.xlsx)
 
-The precision score is shown in the table [results/mixcr_igv_trust4_statistics.csv](results/mixcr_igv_trust4_statistics.csv)
+The precision score is shown in the table [results/mixcr_igv_statistics.csv](results/mixcr_igv_statistics.csv)
 
 The figure below shows the precision of the predicted major clonotypes using the standard MiXCR pipeline relative to those found in IGV, as well as the precision of the detected clonotypes using the TRUST4  running in two modes (with a bam file and with fastq files) and custom MiXCR command relative the predicted major clonotypes from the standard MiXCR pipeline.
 
