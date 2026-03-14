@@ -1,12 +1,12 @@
 # Clonotype identification tools
-Evaluating TRUST4 and a custom MiXCR pipeline against the standard MiXCR workflow: IGV‑validated comparison 
+Evaluating TRUST4, Vidjil and a custom MiXCR pipeline against the standard MiXCR workflow: IGV‑validated comparison 
 
 ## Analysis Workflow Summary
 
 This project compares immune repertoire analysis tools by validating results against visual inspection in IGV. Below is the step‑by‑step workflow.
 
 ### 1. Input Data & Reference Selection
-- We started with major clones identified by the standard MiXCR pipeline.
+- We started with majorclones identified by the standard MiXCR pipeline from WGS data.
 
 ### 2. IGV‑Based Validation of Ig Genes
 - For each major clone, we inspected the corresponding BAM files in IGV (Integrative Genomics Viewer).
