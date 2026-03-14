@@ -1,12 +1,12 @@
 # Clonotype identification tools
-Evaluating TRUST4, Vidjil and a custom MiXCR pipeline against the standard MiXCR workflow: IGV‑validated comparison 
+Comparing tools for identifying clonotypes in WGS data (TRUST4, Vidjil, and MiXCR), using PCR‑derived MiXCR clonotypes as a reference: an IGV‑validated comparison
 
 ## Analysis Workflow Summary
 
-This project compares immune repertoire analysis tools by validating results against visual inspection in IGV. Below is the step‑by‑step workflow.
+This project compares immune repertoire analysis tools for identifying clonotypes from WGS data, with validation against visual inspection in IGV. The motivating use case is: clonotypes were first identified from PCR data using MiXCR, and we then wanted to compare WGS-based clonotype identification tools on the same genomes.
 
 ### 1. Input Data & Reference Selection
-- We started with majorclones identified by the standard MiXCR pipeline from WGS data.
+- We started from clonotypes identified from PCR data using MiXCR, and used the corresponding WGS data from the same genomes/samples to compare clonotype-identification tools.
 
 ### 2. IGV‑Based Validation of Ig Genes
 - For each major clone, we inspected the corresponding BAM files in IGV (Integrative Genomics Viewer).
@@ -17,11 +17,11 @@ This project compares immune repertoire analysis tools by validating results aga
   - Absence of artifacts or misassemblies
 
 
-### 3. Re‑Analysis with Alternative Tools
+### 3. VDJ Clonotypes Analysis in WGS data
 
-Using the same input data (BAM files), we ran to compare against the standard pipeline’s output:
+Using the same input data (BAM files), we ran to compare against the standard MiXCR pipeline’s output from PCR data:
 - **TRUST4**
-- **MiXCR** (custom run)
+- **MiXCR**
 - **Vidjil**
 
 
@@ -99,8 +99,8 @@ vidjil-algo -g germline/homo-sapiens.g -o vidjil_res $merged_reads
 
 ### 4. Comparison & Validation
 We then:
-- Cross‑referenced *major clones* from the standard MiXCR with **IGV visualizations**
-- Compared clonotypes from **TRUST4**, **Vidjil** and **custom MiXCR** with the original *major clones* from the standard MiXCR
+- Cross‑referenced *major clones* from the standard MiXCR (PCR data) with **IGV visualizations**
+- Compared clonotypes from **TRUST4**, **Vidjil** and **custom MiXCR** with the original *major clones* from the standard MiXCR (PCR data)
 
 ### 5. Results
 
@@ -108,7 +108,7 @@ The comparison information is provided in the table [results/samples_clones.xlsx
 
 The precision score is shown in the table [results/mixcr_igv_statistics.csv](results/mixcr_igv_statistics.csv)
 
-The figure below shows the precision of the predicted major clonotypes using the standard MiXCR pipeline relative to those found in IGV, as well as the precision of the detected clonotypes using the TRUST4  running in two modes (with a bam file and with fastq files) and custom MiXCR command relative the predicted major clonotypes from the standard MiXCR pipeline.
+The figure below shows the precision of the predicted major clonotypes using the standard MiXCR pipeline (PCR data) relative to those found in IGV, as well as the precision of the detected clonotypes using the TRUST4  running in two modes (with a bam file and with fastq files), Vidjil and MiXCR command relative the predicted major clonotypes from the standard MiXCR pipeline (PCR data).
 
 <a href="images/heatmap.png" target="_blank">
   <img width="1500" height="2100" src="images/heatmap.png" alt="heatmap.png">
@@ -117,8 +117,8 @@ The figure below shows the precision of the predicted major clonotypes using the
 **Overall precision assessment**
 Comparison groups | Precision, %
 --- | ---
-Precision BCR genes from the standard MiXCR pipeline relative to those found in IGV | 62.5
-Precision TCR genes from the standard MiXCR pipeline relative to those found in IGV | 83.1
+Precision BCR genes from the standard MiXCR pipeline (PCR data) relative to those found in IGV | 62.5
+Precision TCR genes from the standard MiXCR pipeline (PCR data) relative to those found in IGV | 83.1
 
 **Metrics Comparison Across Tools (relative proven in IGV clonotypes from the standard MiXCR pipeline)**
 
@@ -142,10 +142,10 @@ We also assessed the dependence of precision on sample coverage
 #### Key Findings
 
 1. **IGV Validation**  
-   - Not all clonotypes identified by the standard MiXCR pipeline were confirmed via IGV visual inspection.  
+   - Not all clonotypes identified by the standard MiXCR pipeline (PCR data) were confirmed via IGV visual inspection.  
 
 2. **MiXCR Performance**  
-   - No significant difference observed between BCR and TCR detection using the standard MiXCR pipeline.  
+   - No significant difference observed between BCR and TCR detection using the standard MiXCR pipeline (PCR data).  
 
 3. **Tools comparison**
    - Disjunction leads with the highest F1‑score (79.37 %), showing the best balance of precision and recall.
@@ -163,8 +163,8 @@ We also assessed the dependence of precision on sample coverage
    - There is a clear tendency: **higher coverage correlates with improved precision in clonotype detection**.  
   
 ### Summary
-- **MiXCR** (standard/custom) remains the most reliable tool for clonotype detection.  
-- **TRUST4** in BAM mode offers a faster alternative with slightly lower accuracy.  
+- **MiXCR** remains the most reliable tool for clonotype detection.  
+- **TRUST4** in BAM mode offers a faster alternative.  
 - **IGV validation** is strongly recommended for critical clonotypes to ensure confidence in results.
 - **Coverage matters**: Higher sequencing coverage generally leads to more precision clonotype detection.
 
@@ -172,4 +172,5 @@ We also assessed the dependence of precision on sample coverage
 Script path | Description
 --- | ---
 [main.sh](main.sh) | Runnig the programs MiXCR and TRUST4 for samples and adding found clones to the xlsx file
+[main_run.sh](/run_script/main_run.sh) | Runs TRUST4, Vidjil and MiXCR for a single BAM file and produces a summary TSV table with clonotypes and their read counts (to set parameters use config file)
 [stat_table_plot.py](stat_table_plot.py) | Creates table with precision from [results/samples_clones.xlsx](results/samples_clones.xlsx), files with samples ids and samples coverage are required and creates heatmap and scatter plot

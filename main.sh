@@ -26,7 +26,7 @@ function run_trust4()
 	sample=$1
 	sample_bam="${sample}.bam"
 	trust4_output_dir_bam=${work_dir}/${sample}_trust4_bam
-        trust4_output_dir_fastq=${work_dir}/${sample}_trust4_fastq
+    trust4_output_dir_fastq=${work_dir}/${sample}_trust4_fastq
 	R1=${work_dir}/${sample}_R1.fastq.gz
 	R2=${work_dir}/${sample}_R2.fastq.gz
 
@@ -39,11 +39,11 @@ function run_trust4()
 	perl "${trust4_dir}/trust-simplerep.pl" "${trust4_output_dir_fastq}/${sample}_productive_cdr3.out" > "${trust4_output_dir_fastq}/${sample}_report_clean.tsv"
 
 	# run with bam file
-        mkdir -p $trust4_output_dir_bam
-	$trust4 -b $roi_processed_bam -f $bcrtcr_gencode_fa --ref $ref_trust_2 --od $trust4_output_dir_bam -o $sample -t $threads
+    mkdir -p $trust4_output_dir_bam
+	$trust4 -b $sample_bam -f $bcrtcr_gencode_fa --ref $ref_trust_2 --od $trust4_output_dir_bam -o $sample -t $threads
 
-        # filtering unfunctional clones
-        cat "${trust4_output_dir_bam}/${sample}_cdr3.out" | awk '$NF == 1' > "${trust4_output_dir_bam}/${sample}_productive_cdr3.out"
+    # filtering unfunctional clones
+    cat "${trust4_output_dir_bam}/${sample}_cdr3.out" | awk '$NF == 1' > "${trust4_output_dir_bam}/${sample}_productive_cdr3.out"
 	perl "${trust4_dir}/trust-simplerep.pl" "${trust4_output_dir_bam}/${sample}_productive_cdr3.out" > "${trust4_output_dir_bam}/${sample}_report_clean.tsv"
 }
 export -f run_trust4
